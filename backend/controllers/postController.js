@@ -4,6 +4,7 @@ const path = require("path");
 
 const User = require("../models/userModel");
 const Post = require("../models/postModel");
+const { ObjectId } = require("mongoose");
 
 // @desc get all posts
 // @route GET /api/posts
@@ -19,6 +20,14 @@ const getAllPosts = asyncHandler(async (req, res) => {
 
   const posts = await Post.find();
   res.status(200).json(posts);
+});
+
+// @desc get user posts
+// @route GET /api/posts/:postId
+// @access Public
+const getPublicUserPost = asyncHandler(async (req, res) => {
+  const userPost = await Post.findById(req.params.postId);
+  res.status(200).json(userPost);
 });
 
 // @desc get user posts
@@ -130,9 +139,10 @@ const deletePost = asyncHandler(async (req, res) => {
 });
 
 // @desc update user post
-// @route PUT /api/posts/userId/:id
+// @route PUT /api/posts/:userId/:postid
 // @access Private
 const updatePost = asyncHandler(async (req, res) => {
+  console.log(req);
   // get user using the id in the JWT
   const user = await User.findById(req.user.id);
 
@@ -157,8 +167,8 @@ const updatePost = asyncHandler(async (req, res) => {
     editDate: new Date(),
   });
 
-  console.log(req.body);
-  console.log(updatedPost);
+  // console.log(req.body);
+  // console.log(updatedPost);
 
   res.status(200).json(updatedPost);
 });
@@ -170,4 +180,5 @@ module.exports = {
   getPost,
   deletePost,
   updatePost,
+  getPublicUserPost,
 };

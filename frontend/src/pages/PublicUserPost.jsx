@@ -5,9 +5,14 @@ import Spinner from "../components/Spinner";
 import Modal from "react-modal";
 import BackButton from "../components/BackButton";
 import { FaPlus } from "react-icons/fa";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { getUserPost } from "../features/posts/postSlice";
-import { getComments, createComment } from "../features/comment/commentSlice";
+import { useParams, useNavigate } from "react-router-dom";
+import { getPublicUserPost, getUserPost } from "../features/posts/postSlice";
+import {
+  getComments,
+  createComment,
+  getPublicComments,
+  createPublicComment,
+} from "../features/comment/commentSlice";
 import Comment from "../components/Comment";
 
 const customStyles = {
@@ -25,13 +30,15 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-const Post = () => {
+const PublicUserPost = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
 
   const { post, isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.posts
   );
+
+  const { user } = useSelector((state) => state.auth);
 
   const { comments, isLoading: isCommentsLoading } = useSelector(
     (state) => state.comments
@@ -40,20 +47,22 @@ const Post = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { userId, postId } = useParams();
+  const { postId } = useParams();
+  const userId = user._id;
 
   useEffect(() => {
     if (isError) {
       toast.error(message);
     }
-    dispatch(getUserPost({ userId, postId }));
-    dispatch(getComments({ userId, postId }));
-  }, [isError, message, userId, postId]);
+    dispatch(getPublicUserPost(postId));
+    dispatch(getPublicComments(postId));
+  }, [isError, message, postId, dispatch]);
 
   const onCommentSubmit = (e) => {
     e.preventDefault();
-    dispatch(createComment({ commentText, userId, postId }));
+    dispatch(createPublicComment({ commentText, userId, postId }));
     closeModal();
+    navigate(`/posts/${postId}/pub`);
   };
 
   const openModal = () => setModalIsOpen(true);
@@ -68,23 +77,17 @@ const Post = () => {
       <div>
         <header>
           <div className="btn-container">
-            <BackButton url={`/posts/${userId}`} text="My Post" />
+            {/* <BackButton url={`/posts/${userId}`} text="My Post" /> */}
             <BackButton url={`/posts`} text="All Posts" />
           </div>
           <h1>{post.title}</h1>
-          <img src={post.imageSrc} alt={post.title} style={{width: "100%"}} />
+          <img src={post.imageSrc} alt={post.title} style={{ width: "100%" }} />
           <p>Created: {post.createdAt}</p>
           <h2>By: {post.author}</h2>
         </header>
         <div>
           <p>{post.content}</p>
         </div>
-
-        <Link to={`/edit-post/${postId}`}>
-          <button className="btn btn-reverse" style={{ margin: "2rem 0" }}>
-            Edit
-          </button>
-        </Link>
 
         <button
           onClick={openModal}
@@ -98,7 +101,9 @@ const Post = () => {
         <div className="comment-container">
           {comments.length > 0 &&
             comments.map((comment) => {
-              return <Comment comment={comment} key={comment._id} />;
+              return comment.map((item) => (
+                <Comment comment={item} key={item._id} />
+              ));
             })}
         </div>
 
@@ -135,4 +140,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default PublicUserPost;

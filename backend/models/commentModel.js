@@ -16,6 +16,10 @@ const commentSchema = new Schema(
       type: String,
       required: [true, "Please add a comment"],
     },
+    name: {
+      type: String,
+      required: true,
+    },
     // date: {
     //   type: Date,
     //   default: Date.now,

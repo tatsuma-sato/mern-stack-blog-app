@@ -32,10 +32,9 @@ export const createNewPost = createAsyncThunk(
 
 // Get user posts
 export const getUserPosts = createAsyncThunk(
-  "tickets/getUserAll",
+  "posts/getUserAll",
   async (userId, thunkAPI) => {
     try {
-      console.log(userId);
       const token = thunkAPI.getState().auth.user.token;
       return await postService.getUserPosts(userId, token);
     } catch (error) {
@@ -53,12 +52,80 @@ export const getUserPosts = createAsyncThunk(
 
 // Get user posts
 export const getUserPost = createAsyncThunk(
-  "tickets/getUserPost",
+  "posts/getUserPost",
   async ({ userId, postId }, thunkAPI) => {
+    console.log(userId, postId);
     try {
-      console.log(userId, postId);
       const token = thunkAPI.getState().auth.user.token;
       return await postService.getUserPost({ userId, postId }, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Get user posts
+export const getAllPosts = createAsyncThunk(
+  "posts/getAllposts",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await postService.getAllPosts(token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Get public user posts
+export const getPublicUserPost = createAsyncThunk(
+  "posts/getPublicUserPost",
+  async (postId, thunkAPI) => {
+    try {
+      // const token = thunkAPI.getState().auth.user.token;
+      return await postService.getPublicUserPost(postId);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Get public user posts
+export const updateUserPost = createAsyncThunk(
+  "posts/updateUserPost",
+  async ({ userId, postId, title, imageSrc, content }, thunkAPI) => {
+    console.log(title, imageSrc, content);
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await postService.updateUserPost(
+        userId,
+        postId,
+        title,
+        imageSrc,
+        content,
+        token
+      );
     } catch (error) {
       const message =
         (error.response &&
@@ -114,6 +181,44 @@ export const postSlice = createSlice({
         state.post = action.payload;
       })
       .addCase(getUserPost.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.message = action.payload;
+      })
+      .addCase(getAllPosts.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllPosts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.posts = action.payload;
+      })
+      .addCase(getAllPosts.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.message = action.payload;
+      })
+      .addCase(getPublicUserPost.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getPublicUserPost.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.post = action.payload;
+      })
+      .addCase(getPublicUserPost.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.message = action.payload;
+      })
+      .addCase(updateUserPost.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUserPost.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(updateUserPost.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
         state.message = action.payload;

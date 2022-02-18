@@ -9,6 +9,7 @@
 body {
   font-family: "Poppins", sans-serif;
   height: 100vh;
+  background-color: #ccc;
 }
 
 a {
@@ -403,4 +404,33 @@ footer {
   .heading p {
     font-size: 1.5rem;
   }
+}
+
+.post-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.post {
+  width: 250px;
+  margin-bottom: 3rem;
+}
+
+.btn-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+.comment-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.comment {
+  width: 240px;
+  margin-bottom: 2rem;
 }

@@ -8,7 +8,6 @@ const Comment = require("../models/commentModel");
 // @route GET /api/posts/:userId/:id/comments
 // @access Private
 const getComments = asyncHandler(async (req, res) => {
-  console.log(req.user);
   // get user using the id in the JWT
   const user = await User.findById(req.user.id);
 
@@ -25,7 +24,16 @@ const getComments = asyncHandler(async (req, res) => {
   }
 
   const comments = await Comment.find({ post: req.params.id });
+  console.log(post.comment);
 
+  res.status(200).json(comments);
+});
+
+// @desc get comments for post
+// @route GET /api/posts/:postid/comments
+// @access Public
+const getPublicComments = asyncHandler(async (req, res) => {
+  const comments = await Comment.find({ post: req.params.postId });
   res.status(200).json(comments);
 });
 
@@ -52,9 +60,30 @@ const addComment = asyncHandler(async (req, res) => {
     comment: req.body.comment,
     post: req.params.id,
     user: req.user.id,
+    name: user.name,
   });
 
-  await post.comments.push(comment)
+  res.status(200).json(comment);
+});
+
+// @desc create post comment
+// @route POST /api/post/:userId/:id/comments
+// @access Public
+const addPublicComment = asyncHandler(async (req, res) => {
+  // get user using the id in the JWT
+  const user = await User.findById(req.body.userId);
+
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  const comment = await Comment.create({
+    comment: req.body.comment,
+    post: req.params.postId,
+    user: user._id,
+    name: user.name,
+  });
 
   res.status(200).json(comment);
 });
@@ -62,4 +91,6 @@ const addComment = asyncHandler(async (req, res) => {
 module.exports = {
   getComments,
   addComment,
+  getPublicComments,
+  addPublicComment,
 };
