@@ -3,22 +3,23 @@ const Schema = mongoose.Schema;
 
 const commentSchema = new Schema(
   {
-    name: {
-      type: String,
-      default: null,
-    },
-    comment: {
-      type: String,
-      required: [true, "Please add a comment"],
-    },
-    date: {
-      type: Date,
-      default: Date.now,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
     },
     post: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
     },
+    comment: {
+      type: String,
+      required: [true, "Please add a comment"],
+    },
+    // date: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
   },
   { timestamps: true }
 );

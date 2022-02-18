@@ -11,6 +11,10 @@ const {
   deletePost,
 } = require("../controllers/postController");
 const { protect } = require("../middleware/authMiddleware");
+const commentRouter = require("./commentRoutes");
+
+// re-route into comment router
+router.use("/:userId/:id/comments", commentRouter);
 
 router.route("/").get(protect, getAllPosts).post(protect, createPost);
 router.route("/:userId").get(protect, getUserPosts);
