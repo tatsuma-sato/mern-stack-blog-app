@@ -25,6 +25,7 @@ const UserPosts = () => {
     dispatch(getUserPosts(userId));
   }, [dispatch]);
 
+
   if (isLoading) return <Spinner />;
 
   return (

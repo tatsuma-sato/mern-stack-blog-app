@@ -70,8 +70,6 @@ const updateUserPost = async (
     },
   };
 
-  // console.log(postTitle, postImageSrc, postContent);
-
   const response = await axios.put(
     API_URL + userId + "/" + postId,
     {
@@ -84,6 +82,17 @@ const updateUserPost = async (
   return response.data;
 };
 
+const deleteUserPost = async (userId, postId, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.delete(API_URL + userId + "/" + postId, config);
+  return response.data;
+};
+
 const postService = {
   createPost,
   getUserPosts,
@@ -91,6 +100,7 @@ const postService = {
   getAllPosts,
   getPublicUserPost,
   updateUserPost,
+  deleteUserPost,
 };
 
 export default postService;

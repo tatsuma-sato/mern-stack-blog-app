@@ -54,7 +54,6 @@ export const getUserPosts = createAsyncThunk(
 export const getUserPost = createAsyncThunk(
   "posts/getUserPost",
   async ({ userId, postId }, thunkAPI) => {
-    console.log(userId, postId);
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await postService.getUserPost({ userId, postId }, token);
@@ -126,6 +125,26 @@ export const updateUserPost = createAsyncThunk(
         content,
         token
       );
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Get public user posts
+export const deleteUserPost = createAsyncThunk(
+  "posts/deleteUserPost",
+  async ({ userId, postId }, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await postService.deleteUserPost(userId, postId, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -219,6 +238,19 @@ export const postSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(updateUserPost.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.message = action.payload;
+      })
+      .addCase(deleteUserPost.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteUserPost.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.post = action.payload;
+      })
+      .addCase(deleteUserPost.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
         state.message = action.payload;

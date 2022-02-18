@@ -6,9 +6,10 @@ import Modal from "react-modal";
 import BackButton from "../components/BackButton";
 import { FaPlus } from "react-icons/fa";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { getUserPost } from "../features/posts/postSlice";
+import { deleteUserPost, getUserPost, getUserPosts } from "../features/posts/postSlice";
 import { getComments, createComment } from "../features/comment/commentSlice";
 import Comment from "../components/Comment";
+
 
 const customStyles = {
   content: {
@@ -59,6 +60,12 @@ const Post = () => {
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
+  const onDelete = () => {
+    dispatch(deleteUserPost({ userId, postId }));
+    dispatch(getUserPosts(userId));
+    navigate(`/posts/${userId}`);
+  };
+
   if (isLoading || isCommentsLoading) return <Spinner />;
 
   if (isError) return <h3>Something went wrong</h3>;
@@ -72,7 +79,7 @@ const Post = () => {
             <BackButton url={`/posts`} text="All Posts" />
           </div>
           <h1>{post.title}</h1>
-          <img src={post.imageSrc} alt={post.title} style={{width: "100%"}} />
+          <img src={post.imageSrc} alt={post.title} style={{ width: "100%" }} />
           <p>Created: {post.createdAt}</p>
           <h2>By: {post.author}</h2>
         </header>
@@ -85,6 +92,12 @@ const Post = () => {
             Edit
           </button>
         </Link>
+
+        {userId === post.user && (
+          <button className="btn" onClick={() => onDelete()}>
+            Delete
+          </button>
+        )}
 
         <button
           onClick={openModal}
