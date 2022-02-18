@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const colors = require("colors");
 const { errorHandler } = require("./middleware/errorMiddleware");
@@ -15,12 +16,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Welcome to support desk API" });
+  res.status(200).json({ message: "Welcome to Blog API" });
 });
 
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
+
+// serve front end
+if (process.env.NODE_ENV === "production") {
+  // set build folder as static
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+  app.get("*", (req, res) =>
+    res.sendFile(__dirname, "../", "frontend", "build", "index.html")
+  );
+} else {
+  app.get("/", (req, res) => {
+    res.status(200).json({ message: "Welcome to Blog API" });
+  });
+}
 
 app.use(errorHandler);
 
