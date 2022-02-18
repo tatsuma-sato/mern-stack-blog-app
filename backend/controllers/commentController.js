@@ -5,7 +5,7 @@ const Post = require("../models/postModel");
 const Comment = require("../models/commentModel");
 
 // @desc get comments for post
-// @route GET /api/posts/:userId/:id/comments
+// @route GET /api/posts/:userId/:postId/comments
 // @access Private
 const getComments = asyncHandler(async (req, res) => {
   // get user using the id in the JWT
