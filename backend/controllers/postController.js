@@ -41,7 +41,7 @@ const getUserPosts = asyncHandler(async (req, res) => {
 // @route POST /api/posts/
 // @access Private
 const createPost = asyncHandler(async (req, res) => {
-  const { title, content, postId } = req.body;
+  const { title, content, imageSrc } = req.body;
   // const imageData = {
   //   data: fs.readFileSync(
   //     path.join(__dirname, "../public", "images", req.file.filename)
@@ -65,7 +65,8 @@ const createPost = asyncHandler(async (req, res) => {
   const post = await Post.create({
     title,
     content,
-    // imageData,
+    imageSrc,
+    author: req.user.name,
     user: req.user.id,
   });
 

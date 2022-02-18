@@ -7,13 +7,16 @@ const postSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
+    author: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
       required: [true, "Please add a title"],
     },
-    imageData: {
-      data: Buffer,
-      contentType: String,
+    imageSrc: {
+      type: String,
     },
     date: {
       type: Date,
