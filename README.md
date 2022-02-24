@@ -24,8 +24,11 @@ Safety authentication
 1. /api/posts/:userId/:postId/comments **GET**, **POST** to get all posts comments and post a comment
 
 ## Site images
+
 ### Home page
-https://user-images.githubusercontent.com/82295664/155458656-d354ff6d-a1f8-4793-9bb4-37ee84b382b2.png
+
+![home page](https://user-images.githubusercontent.com/82295664/155458656-d354ff6d-a1f8-4793-9bb4-37ee84b382b2.png)
 
 ### View posts page
-https://user-images.githubusercontent.com/82295664/155458865-2a14b290-ea0c-4e3c-ae21-2c447c2d0e80.png
+
+![view page](https://user-images.githubusercontent.com/82295664/155458865-2a14b290-ea0c-4e3c-ae21-2c447c2d0e80.png)
