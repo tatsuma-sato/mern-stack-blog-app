@@ -6,10 +6,14 @@ import Modal from "react-modal";
 import BackButton from "../components/BackButton";
 import { FaPlus } from "react-icons/fa";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { deleteUserPost, getUserPost, getUserPosts } from "../features/posts/postSlice";
+import {
+  deleteUserPost,
+  getUserPost,
+  getUserPosts,
+  reset,
+} from "../features/posts/postSlice";
 import { getComments, createComment } from "../features/comment/commentSlice";
 import Comment from "../components/Comment";
-
 
 const customStyles = {
   content: {
@@ -47,6 +51,7 @@ const Post = () => {
     if (isError) {
       toast.error(message);
     }
+    dispatch(reset());
     dispatch(getUserPost({ userId, postId }));
     dispatch(getComments({ userId, postId }));
   }, [isError, message, userId, postId]);
