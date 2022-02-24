@@ -1,4 +1,4 @@
-# MERS stack blog app
+# MERN stack blog app
 
 ## Description
 
